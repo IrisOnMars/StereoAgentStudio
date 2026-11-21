@@ -1,6 +1,6 @@
 # Windows 安装说明
 
-适用于 Windows 10 或 11 x64。收到仓库邀请后，登录同一个 GitHub 账号并接受邀请。进入仓库，点击 **Code → Download ZIP**，或用 Git 克隆。把文件解压到可写目录再运行。
+适用于 Windows 10 或 11 x64。打开 [项目仓库](https://github.com/IrisOnMars/StereoAgentStudio)，点击 **Code → Download ZIP**，或用 Git 克隆。下载源码无需登录。把文件解压到可写目录再运行。
 
 1. 安装 [Python 3.11 x64](https://www.python.org/downloads/release/python-3119/)，安装时保留 Python Launcher。已有 64 位 Python 3.11 可以复用。
 2. 首次双击 `setup.cmd`。它会把 Electron、llama.cpp、Qwen 2B 和 Pillow 安装到项目目录，公开模型和安装包按 SHA-256 校验。约下载 **1.75 GB**，另有少量 Python 依赖。
@@ -36,6 +36,4 @@
 
 公开立体依赖来自 [Stable Diffusion 2.1 Base FP16](https://huggingface.co/sd2-community/stable-diffusion-2-1-base/tree/4e63672c03103b6c636b8fb4119ba982469b2955)、[Depth Anything V2 Small](https://huggingface.co/depth-anything/Depth-Anything-V2-Small/resolve/03876f8651c73a60fe4c2c48294e09fcb6838fcf/depth_anything_v2_vits.pth)、[Mono2Stereo 上游代码](https://github.com/song2yu/Mono2Stereo/tree/613d41329edfc20452c4085891ab8b4b0901a9b1)和 [PyTorch CUDA 12.8](https://download.pytorch.org/whl/cu128/)。安装清单列出了每个文件的保存位置和校验值。上游公开的 10.39 GB 原始 checkpoint 和组内部署版是不同文件，不能直接改名代替。 [文件清单](../scripts/windows-downloads.json)
 
-## 加入私有仓库
-
-维护者在 GitHub 仓库的 **Settings → Collaborators** 中按成员的 GitHub 用户名发出邀请。成员接受邀请后，用该账号打开仓库链接即可。仓库用于协作更新源码与测试图，`config.json`、模型、运行库、对话数据和日志都保存在各自电脑。
+仓库里的源码和测试图可以直接下载。`config.json`、模型、运行库、对话数据和日志都保存在各自电脑。
