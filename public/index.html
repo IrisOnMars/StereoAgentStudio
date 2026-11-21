@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>StereoAgent Studio</title><link rel="stylesheet" href="/styles.css"></head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand" href="/"><span class="brand-icon">◧</span><span>StereoAgent<span class="brand-sub">STUDIO</span></span></a>
+    <button id="new-chat" class="new-chat"><span>＋</span> New workspace <kbd>Ctrl K</kbd></button>
+    <label class="search"><span>⌕</span><input id="search" placeholder="Search workspaces"></label>
+    <div class="section-label">WORKSPACES</div><nav id="sessions"></nav>
+    <div class="sidebar-bottom"><div class="project-tag"><span class="small-mark">S</span><div>CSIT998 Project<small>Local research workspace</small></div><span class="tag">v0.1</span></div><button id="settings-button" class="settings-button">⚙ <span>Model & settings</span><span>↗</span></button></div>
+  </aside>
+  <main>
+    <header class="topbar"><div class="breadcrumb">Workspace <span>/</span> <strong id="workspace-title">Untitled workspace</strong></div><div class="top-actions"><span class="private-badge">● Local-first</span><button id="inspector-toggle" class="icon-button" title="Toggle inspector">◫</button></div></header>
+    <section class="conversation" id="conversation">
+      <div class="welcome" id="welcome"><div class="eyebrow"><span></span> IMAGE WORKFLOW AGENT</div><h1>From an image.<br>To your next perspective.</h1><p>Edit with precise instructions. Build a version you can trace.<br>Generate stereo views and export the result.</p><div class="suggestions"><button data-prompt="Inspect the current image and tell me its dimensions."><span>⌕</span><strong>Understand an image</strong><small>Inspect content and dimensions</small></button><button data-prompt="Crop 20 pixels from the left, then increase saturation by 10%."><span>⌗</span><strong>Make precise edits</strong><small>Crop, resize and adjust colour</small></button><button data-prompt="Generate the right-eye view from the current image."><span>◧</span><strong>Generate a right-eye view</strong><small>Compensated right view and red/cyan image</small></button></div><div class="welcome-note">Start with a question, or attach an image to make your first edit.</div></div>
+      <div id="messages" class="messages"></div><div id="working" class="working" hidden><span class="spinner"></span><span id="working-text">Planning your workflow…</span><button id="cancel">Stop</button></div>
+    </section>
+    <div class="composer-region">
+      <form id="composer">
+        <div id="attachment" hidden>
+          <img id="attachment-preview" alt="">
+          <div class="attachment-info">
+            <small id="attachment-kind"></small>
+            <strong id="attachment-name"></strong>
+          </div>
+          <button type="button" id="detach-image" aria-label="Remove image from message" title="Remove image from message">×</button>
+        </div>
+        <textarea id="prompt" rows="2" maxlength="5000" aria-label="Message" placeholder="Ask about an image or describe an edit…"></textarea>
+        <div class="composer-bottom">
+          <div>
+            <button type="button" id="attach" class="attach-button" aria-label="Attach image" title="Attach image">＋</button>
+            <button type="button" id="model-chip" class="model-chip"><span class="model-dot"></span><span id="model-label">Qwen3-VL · 2B</span><span>⌄</span></button>
+          </div>
+          <button id="send" type="submit" class="send" aria-label="Send message" title="Send message" disabled>↑</button>
+        </div>
+      </form>
+      <div class="composer-caption"><span id="model-status">Connecting to local runtime…</span><span>Enter to send · Shift Enter for a new line</span></div>
+    </div>
+  </main>
+  <aside class="inspector" id="inspector"><div class="inspector-header"><strong>Workspace assets</strong><span id="asset-count" class="count">0</span></div><div class="preview-box" id="preview-box"><div class="empty-preview"><span>▧</span><strong>Your canvas starts here</strong><p>Add an image to chat to start editing.</p><button id="upload-preview">Attach image</button></div></div><div id="asset-meta" class="asset-meta"></div><div id="stereo-controls" class="stereo-controls" hidden><button id="open-stereo" type="button">Generate stereo</button><label id="stereo-view-label" class="field" hidden>Stereo view<select id="stereo-view"><option value="left">Left view</option><option value="right">Right view</option><option value="baseline_right" hidden disabled>Original right</option><option value="sbs">Side by side</option><option value="anaglyph">Red/cyan anaglyph</option></select></label></div><div id="asset-actions" class="asset-actions" hidden><button id="undo">↶ Undo</button><a id="download">↓ Export</a></div><div class="inspector-section"><div class="section-label">IMAGES &amp; VERSIONS</div><p class="asset-hint">Select an image to use it in chat.</p><div id="versions" class="versions"><p class="muted">New edits appear here.</p></div></div><div class="inspector-section capabilities"><div class="section-label">WORKFLOW TOOLS</div><div><span>Crop & resize</span><b>Ready</b></div><div><span>Colour adjustments</span><b>Ready</b></div><div><span>Version & export</span><b>Ready</b></div><div><span>Stereo generation</span><b id="stereo-badge" class="pending">Disabled</b></div><div><span>Video workflows</span><b class="pending">Planned</b></div></div><div class="inspector-footer">Private media · Local processing<br><span>Originals are preserved.</span></div></aside>
+</div>
+<input id="file-input" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+<dialog id="delete-dialog" aria-labelledby="delete-title" aria-describedby="delete-description"><div class="dialog-heading"><div><small>WORKSPACE</small><h2 id="delete-title">Delete this conversation?</h2></div><button id="delete-close" type="button" class="icon-button" aria-label="Cancel deletion">×</button></div><p id="delete-target" class="delete-target"></p><p id="delete-description" class="muted">This removes the conversation, task records and image versions from this workspace. It cannot be undone in the app. Local image files and exported files are kept.</p><div class="delete-dialog-actions"><button id="delete-cancel" type="button" autofocus>Cancel</button><button id="delete-confirm" type="button" class="danger">Delete conversation</button></div><p id="delete-error" class="delete-error" role="alert" hidden></p></dialog>
+<dialog id="settings"><form method="dialog"><div class="dialog-heading"><div><small>LOCAL RUNTIME</small><h2>Model & workspace</h2></div><button class="icon-button">×</button></div><p class="muted">Model files are stored in this project's models folder. No cloud API is configured.</p><label class="field">Active model<select id="model-select"><option value="2b">Qwen3-VL-2B-Instruct · Q4 · faster</option><option value="8b">Qwen3-VL-8B-Instruct · Q4 · larger</option></select></label><div class="button-row"><button id="load-model" type="button" class="primary">Load selected model</button><button id="stop-model" type="button">Stop model</button></div><hr><label class="checkbox"><input id="stereo-enabled" type="checkbox"> Enable bundled stereo generation</label><p class="muted">Stereo generation uses a compatible NVIDIA CUDA GPU.</p><button id="save-settings" type="button">Save stereo setting</button><div id="settings-state" class="muted"></div></form></dialog>
+<dialog id="stereo-dialog" aria-labelledby="stereo-title">
+  <form id="stereo-form">
+    <div class="dialog-heading"><h2 id="stereo-title">Generate stereo</h2><button id="stereo-close" class="icon-button" type="button" aria-label="Close">×</button></div>
+    <label class="field">Resolution per eye<select id="stereo-resolution"><option value="preview">Preview (448 × 256)</option><option value="final">Final (896 × 512)</option></select></label>
+    <label class="field">Stereo strength<input id="stereo-strength" type="number" min="0.5" max="8" step="0.1" value="4.8" required></label>
+    <label id="stereo-detail-label" class="field" hidden>Detail compensation<select id="stereo-detail">
+      <option value="legacy_high_frequency">Legacy high-frequency detail compensation</option>
+      <option value="appearance_multiband">Appearance-aligned detail compensation</option>
+      <option value="baseline">No detail compensation</option>
+    </select></label>
+    <label id="stereo-fit-label" class="field" hidden>Framing<select id="stereo-fit" aria-describedby="stereo-fit-note">
+      <option value="pad">Fit whole image</option>
+      <option value="center_crop">Center crop to 7:4</option>
+    </select></label>
+    <p id="stereo-fit-note" class="muted" hidden>Fit adds borders to keep the whole image in view.</p>
+    <div class="button-row"><button id="stereo-submit" type="submit" class="primary">Generate</button></div>
+  </form>
+</dialog>
+<dialog id="image-viewer" class="image-viewer" aria-labelledby="viewer-title">
+  <div class="viewer-toolbar">
+    <div class="viewer-info"><strong id="viewer-title">Image preview</strong><span id="viewer-meta"></span></div>
+    <div class="viewer-actions">
+      <button id="viewer-actual" type="button" title="Reset to original size">Original size</button>
+      <a id="viewer-download" download>Download</a>
+      <button id="viewer-close" type="button" aria-label="Close image preview">✕</button>
+    </div>
+  </div>
+  <div class="viewer-main">
+    <div id="viewer-canvas" class="viewer-canvas"><div class="viewer-stage"><img id="viewer-image" alt=""></div></div>
+    <button id="viewer-prev" class="viewer-nav" type="button" aria-label="Previous stereo view" hidden>‹</button>
+    <button id="viewer-next" class="viewer-nav" type="button" aria-label="Next stereo view" hidden>›</button>
+  </div>
+  <div class="viewer-footer">
+    <p id="viewer-status" class="viewer-status" role="status"></p>
+    <div id="viewer-zoom" aria-label="Zoom controls">
+      <button id="viewer-minus" type="button" aria-label="Zoom out">−</button>
+      <span id="viewer-percent">100%</span>
+      <button id="viewer-plus" type="button" aria-label="Zoom in">+</button>
+    </div>
+  </div>
+</dialog>
+<div id="toast" role="status" hidden></div><script src="/vendor/marked.umd.js"></script><script src="/vendor/purify.min.js"></script><script src="/app.js"></script>
+</body></html>

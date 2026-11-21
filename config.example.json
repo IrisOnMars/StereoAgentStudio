@@ -1,0 +1,12 @@
+{
+  "port": 17863,
+  "modelPort": 17864,
+  "model": "2b",
+  "autoStartModel": true,
+  "python": "stereo-runtime/setup-venv/Scripts/python.exe",
+  "stereoRoot": "stereo-runtime",
+  "stereoPython": "stereo-runtime/setup-venv/Scripts/python.exe",
+  "stereoEnabled": false,
+  "stereoBackend": "pytorch",
+  "timeZone": "Asia/Shanghai"
+}
